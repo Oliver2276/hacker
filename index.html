@@ -1,143 +1,154 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Animación Hacker Texto con Botón</title>
-<style>
-  body {
-    background-color: red;
-    color: white;
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    user-select: none;
-    transition: background-color 1s ease, color 1s ease, font-family 1s ease;
-    padding: 0 10px;
-    box-sizing: border-box;
-    text-align: center;
-    overflow: hidden;
-    position: relative;
-  }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Animación Hacker</title>
+  <style>
+    body {
+      background-color: red;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      user-select: none;
+      overflow: hidden;
+      position: relative;
+      transition: all 1s ease;
+      text-align: center;
+      padding: 0 10px;
+      box-sizing: border-box;
+    }
 
-  canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 0;
-    width: 100%;
-    height: 100%;
-  }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+    }
 
-  #texto, button {
-    z-index: 1;
-    position: relative;
-  }
+    #texto, button {
+      z-index: 1;
+      position: relative;
+    }
 
-  #texto {
-    font-size: 4rem;
-    white-space: nowrap;
-    margin-bottom: 20px;
-    transition: font-family 1s ease;
-    word-break: break-word;
-    max-width: 100%;
-  }
-
-  button {
-    padding: 12px 25px;
-    font-size: 1.2rem;
-    background-color: #004400;
-    border: none;
-    border-radius: 8px;
-    color: white;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    max-width: 100%;
-    box-sizing: border-box;
-  }
-
-  button:hover:not(:disabled) {
-    background-color: #008800;
-  }
-
-  button:disabled {
-    opacity: 0.5;
-    cursor: default;
-  }
-
-  @media (max-width: 600px) {
     #texto {
-      font-size: 2.5rem;
-      white-space: normal;
+      font-size: 4rem;
+      white-space: nowrap;
+      margin-bottom: 20px;
+      transition: font-family 1s ease;
+      max-width: 100%;
     }
 
     button {
-      font-size: 1rem;
-      padding: 10px 20px;
-      width: 100%;
-      max-width: 300px;
+      padding: 12px 25px;
+      font-size: 1.2rem;
+      background-color: #004400;
+      border: none;
+      border-radius: 100%;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      max-width: 100%;
+      box-sizing: border-box;
+      margin: 5px;
     }
-  }
-</style>
+
+    button:hover:not(:disabled) {
+      background-color: #008800;
+    }
+
+    button:disabled {
+      opacity: 0.5;
+      cursor: default;
+      text-decoration: line-through;
+    }
+
+    @media (max-width: 600px) {
+      #texto {
+        font-size: 2.5rem;
+        white-space: normal;
+      }
+
+      button {
+        font-size: 1rem;
+        padding: 10px 20px;
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+
+    #opciones {
+      display: none;
+      flex-direction: column;
+    }
+  </style>
 </head>
 <body>
 
 <canvas id="matrixCanvas"></canvas>
-
 <h1 id="texto">¡Hola, mundo!</h1>
 <button id="btnHacker">Hacker</button>
 
+<div id="opciones">
+  <button id="btnArreglar">Arreglar todo</button>
+  <button id="btnHackearMas">Hackear aún más</button>
+</div>
+
 <script>
-  // Animación Matrix
-  const canvas = document.getElementById('matrixCanvas');
-  const ctx = canvas.getContext('2d');
-
-  let width = canvas.width = window.innerWidth;
-  let height = canvas.height = window.innerHeight;
-
-  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-  const fontSize = 14;
-  const columns = Math.floor(width / fontSize);
-  const drops = Array(columns).fill(1);
-
-  function drawMatrix() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, width, height);
-
-    ctx.fillStyle = '#0F0';
-    ctx.font = `${fontSize}px monospace`;
-
-    for (let i = 0; i < drops.length; i++) {
-      const text = letters.charAt(Math.floor(Math.random() * letters.length));
-      const x = i * fontSize;
-      const y = drops[i] * fontSize;
-
-      ctx.fillText(text, x, y);
-
-      if (y > height && Math.random() > 0.975) {
-        drops[i] = 0;
-      }
-
-      drops[i]++;
-    }
-  }
-
-  setInterval(drawMatrix, 50);
-
-  window.addEventListener('resize', () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  });
-
-  // Hacker Button Logic
   const texto = document.getElementById('texto');
   const btnHacker = document.getElementById('btnHacker');
+  const btnArreglar = document.getElementById('btnArreglar');
+  const btnHackearMas = document.getElementById('btnHackearMas');
+  const opciones = document.getElementById('opciones');
+
   const numbers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
+  const binary = ['0', '1'];
   const targetText = 'ESTÁS HACKEADO';
+  const preguntaFinal = '¿AHORA QUÉ HARÁS?';
+
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+  const fontSize = 14;
+  const letras = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  let drops;
+  let matrixIntervals = [];
+
+  function iniciarLluvia(velocidad = 50) {
+    const columns = Math.floor(width / fontSize);
+    drops = Array(columns).fill(1);
+
+    const interval = setInterval(() => {
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+      ctx.fillRect(0, 0, width, height);
+      ctx.fillStyle = '#0F0';
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letras.charAt(Math.floor(Math.random() * letras.length));
+        const x = i * fontSize;
+        const y = drops[i] * fontSize;
+
+        ctx.fillText(text, x, y);
+
+        if (y > height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }, velocidad);
+
+    matrixIntervals.push(interval);
+  }
 
   function convertirATextoBinario(original, callback) {
     let iteration = 0;
@@ -148,10 +159,10 @@
       let displayed = '';
       for (let i = 0; i < length; i++) {
         if (iteration >= maxIterations) {
-          displayed += numbers[Math.floor(Math.random() * numbers.length)];
+          displayed += binary[Math.floor(Math.random() * binary.length)];
         } else {
           if (Math.random() < iteration / maxIterations) {
-            displayed += numbers[Math.floor(Math.random() * numbers.length)];
+            displayed += binary[Math.floor(Math.random() * binary.length)];
           } else {
             displayed += original[i];
           }
@@ -166,7 +177,7 @@
     }, 80);
   }
 
-  function transformarANuevoTexto(nuevoTexto) {
+  function transformarANuevoTexto(nuevoTexto, callback) {
     let displayed = texto.textContent.split('');
     let target = nuevoTexto.split('');
     const length = Math.max(displayed.length, target.length);
@@ -176,6 +187,7 @@
       if (index >= length) {
         clearInterval(interval);
         texto.textContent = nuevoTexto;
+        if (callback) callback();
         return;
       }
 
@@ -194,14 +206,55 @@
 
   btnHacker.addEventListener('click', () => {
     btnHacker.disabled = true;
+
     document.body.style.backgroundColor = 'black';
     document.body.style.color = '#00ff00';
     document.body.style.fontFamily = 'monospace';
     texto.style.fontFamily = 'monospace';
 
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    iniciarLluvia();
+
     convertirATextoBinario(texto.textContent, () => {
-      transformarANuevoTexto(targetText);
+      transformarANuevoTexto(targetText, () => {
+        setTimeout(() => {
+          convertirATextoBinario(targetText, () => {
+            transformarANuevoTexto(preguntaFinal, () => {
+              opciones.style.display = 'flex';
+            });
+          });
+        }, 1500);
+      });
     });
+  });
+
+  btnArreglar.addEventListener('click', () => {
+    document.body.style.backgroundColor = 'red';
+    document.body.style.color = 'white';
+    document.body.style.fontFamily = 'Arial, sans-serif';
+    texto.style.fontFamily = 'Arial, sans-serif';
+    texto.textContent = '¡Hola, mundo!';
+    btnHacker.disabled = true;
+    opciones.style.display = 'none';
+
+    // Detener todas las lluvias
+    matrixIntervals.forEach(interval => clearInterval(interval));
+    matrixIntervals = [];
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+
+  btnHackearMas.addEventListener('click', () => {
+    // Iniciar muchas lluvias superpuestas cada 1ms
+    for (let i = 0; i < 1; i++) {
+      setTimeout(() => iniciarLluvia(1), i * 50);
+    }
+  });
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
   });
 </script>
 
