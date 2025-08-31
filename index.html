@@ -20,6 +20,22 @@
     padding: 0 10px;
     box-sizing: border-box;
     text-align: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  #texto, button {
+    z-index: 1;
+    position: relative;
   }
 
   #texto {
@@ -43,15 +59,16 @@
     max-width: 100%;
     box-sizing: border-box;
   }
+
   button:hover:not(:disabled) {
     background-color: #008800;
   }
+
   button:disabled {
     opacity: 0.5;
     cursor: default;
   }
 
-  /* Responsive para pantallas pequeñas */
   @media (max-width: 600px) {
     #texto {
       font-size: 2.5rem;
@@ -69,13 +86,57 @@
 </head>
 <body>
 
+<canvas id="matrixCanvas"></canvas>
+
 <h1 id="texto">¡Hola, mundo!</h1>
 <button id="btnHacker">Hacker</button>
 
 <script>
+  // Animación Matrix
+  const canvas = document.getElementById('matrixCanvas');
+  const ctx = canvas.getContext('2d');
+
+  let width = canvas.width = window.innerWidth;
+  let height = canvas.height = window.innerHeight;
+
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const fontSize = 14;
+  const columns = Math.floor(width / fontSize);
+  const drops = Array(columns).fill(1);
+
+  function drawMatrix() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+    ctx.fillRect(0, 0, width, height);
+
+    ctx.fillStyle = '#0F0';
+    ctx.font = `${fontSize}px monospace`;
+
+    for (let i = 0; i < drops.length; i++) {
+      const text = letters.charAt(Math.floor(Math.random() * letters.length));
+      const x = i * fontSize;
+      const y = drops[i] * fontSize;
+
+      ctx.fillText(text, x, y);
+
+      if (y > height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+
+      drops[i]++;
+    }
+  }
+
+  setInterval(drawMatrix, 50);
+
+  window.addEventListener('resize', () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  });
+
+  // Hacker Button Logic
   const texto = document.getElementById('texto');
   const btnHacker = document.getElementById('btnHacker');
-  const numbers = ['0', '1'];
+  const numbers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
   const targetText = 'ESTÁS HACKEADO';
 
   function convertirATextoBinario(original, callback) {
@@ -114,7 +175,7 @@
     const interval = setInterval(() => {
       if (index >= length) {
         clearInterval(interval);
-        texto.textContent = nuevoTexto; // texto final exacto
+        texto.textContent = nuevoTexto;
         return;
       }
 
@@ -132,9 +193,7 @@
   }
 
   btnHacker.addEventListener('click', () => {
-    btnHacker.disabled = true; // evitar múltiples clicks
-    
-    // Cambiar fondo, color y fuente suavemente
+    btnHacker.disabled = true;
     document.body.style.backgroundColor = 'black';
     document.body.style.color = '#00ff00';
     document.body.style.fontFamily = 'monospace';
