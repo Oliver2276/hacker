@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Animación Hacker Texto con Botón</title>
+<style>
+  body {
+    background-color: red;
+    color: white;
+    font-family: Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    user-select: none;
+    transition: background-color 1s ease, color 1s ease, font-family 1s ease;
+    padding: 0 10px;
+    box-sizing: border-box;
+    text-align: center;
+  }
+
+  #texto {
+    font-size: 4rem;
+    white-space: nowrap;
+    margin-bottom: 20px;
+    transition: font-family 1s ease;
+    word-break: break-word;
+    max-width: 100%;
+  }
+
+  button {
+    padding: 12px 25px;
+    font-size: 1.2rem;
+    background-color: #004400;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  button:hover:not(:disabled) {
+    background-color: #008800;
+  }
+  button:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  /* Responsive para pantallas pequeñas */
+  @media (max-width: 600px) {
+    #texto {
+      font-size: 2.5rem;
+      white-space: normal;
+    }
+
+    button {
+      font-size: 1rem;
+      padding: 10px 20px;
+      width: 100%;
+      max-width: 300px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h1 id="texto">¡Hola, mundo!</h1>
+<button id="btnHacker">Hacker</button>
+
+<script>
+  const texto = document.getElementById('texto');
+  const btnHacker = document.getElementById('btnHacker');
+  const numbers = ['0', '1'];
+  const targetText = 'ESTÁS HACKEADO';
+
+  function convertirATextoBinario(original, callback) {
+    let iteration = 0;
+    const maxIterations = 20;
+    const length = original.length;
+
+    const interval = setInterval(() => {
+      let displayed = '';
+      for (let i = 0; i < length; i++) {
+        if (iteration >= maxIterations) {
+          displayed += numbers[Math.floor(Math.random() * numbers.length)];
+        } else {
+          if (Math.random() < iteration / maxIterations) {
+            displayed += numbers[Math.floor(Math.random() * numbers.length)];
+          } else {
+            displayed += original[i];
+          }
+        }
+      }
+      texto.textContent = displayed;
+      iteration++;
+      if (iteration > maxIterations) {
+        clearInterval(interval);
+        if (callback) callback();
+      }
+    }, 80);
+  }
+
+  function transformarANuevoTexto(nuevoTexto) {
+    let displayed = texto.textContent.split('');
+    let target = nuevoTexto.split('');
+    const length = Math.max(displayed.length, target.length);
+    let index = 0;
+
+    const interval = setInterval(() => {
+      if (index >= length) {
+        clearInterval(interval);
+        texto.textContent = nuevoTexto; // texto final exacto
+        return;
+      }
+
+      for (let i = 0; i < length; i++) {
+        if (i <= index) {
+          displayed[i] = target[i] || ' ';
+        } else {
+          displayed[i] = numbers[Math.floor(Math.random() * numbers.length)];
+        }
+      }
+
+      texto.textContent = displayed.join('');
+      index++;
+    }, 120);
+  }
+
+  btnHacker.addEventListener('click', () => {
+    btnHacker.disabled = true; // evitar múltiples clicks
+    
+    // Cambiar fondo, color y fuente suavemente
+    document.body.style.backgroundColor = 'black';
+    document.body.style.color = '#00ff00';
+    document.body.style.fontFamily = 'monospace';
+    texto.style.fontFamily = 'monospace';
+
+    convertirATextoBinario(texto.textContent, () => {
+      transformarANuevoTexto(targetText);
+    });
+  });
+</script>
+
+</body>
+</html>
